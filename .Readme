@@ -1,0 +1,73 @@
+
+# ^ updates only minor/patch versions
+# ~ updates only patch versions
+
+
+# app.use() --> takes all the rest api requests
+# app.get() --> takes only get requests
+# app.use(() => {}) -> works for all the routes
+# app.use(express.json()) --> takes all the rest api requests for all the routes and convert them to json --> it is a middleware
+
+# app.use("", () => {}) --> works for only that particular routes and handles all the rest api requests/methods (get, post, put, delete, etc)
+
+# 1st work:
+# ----------
+
+# const express = require("express");
+# const app = express();
+# const userModel = require("./models/usermodel")
+# app.use(express.json()); // to parse the incoming request with JSON payloads
+
+# const connectDb = require("./config/database");
+# app.post("/admin/addUser", async (req, res) => {
+#     try{
+#         const usr = new userModel(req.body)
+#         await usr.save(); // to save it to the database
+#         res.send("user added to the DB successfully");
+
+#     }
+#     catch(err){
+#         res.send("cannot add user to DB: " + err);
+#     }
+    
+# })
+
+
+# connectDb()
+# .then(() => {
+#     try{
+#         console.log("connected to DB");
+#         app.listen(7777, ()=>{
+#             console.log("listening on port 7777");
+#         })
+#     }
+#     catch(e){
+#         console.log("Couldn't listen on port")
+#     }
+# })
+
+
+
+
+
+
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
