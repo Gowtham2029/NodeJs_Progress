@@ -1,18 +1,21 @@
 const express = require("express");
 const app = express();
 
-app.use("/user", (req, res, next) => {
-    console.log("response 1");
-    res.send("Hello from response 1")
-    next();
+const { adminAuth, userAuth } = require("./middlewares/auth")
 
-},
-(req, res, next) => {
-    console.log("response 2");
-    res.send("Hello from response 2")
-    // next();
-}
-)
+app.use("/admin", adminAuth)
+
+
+app.get("/user", userAuth, (req, res) => {
+    res.send("Welcome to the user page");
+})
+app.get("/admin/getAllDetails", (req, res) => {
+    res.send("Welcome to the user page");
+})
+
+app.get("/admin/DeleteUser", (req, res) => {
+    res.send("Deleted a user");
+})
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
