@@ -60,11 +60,18 @@ app.get("/feed", async (req, res) => {
 
 
 // update user by id
-app.patch("/user", async (req, res) => {
-    const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+    const userId = req.params.userId;
     const data = req.body;
 
     try{
+        const ALLOWED_UPDATES = ["photoUrl", "about", "skills", "gender", "age"]
+
+        const isUpdateAllowed = Object.keys(data).every((k) => ALLOWED_UPDATES.includes(k));
+        if(!isUpdateAllowed){
+            throw new Error("Invalid update fields");
+        }
+
         const user = await User.findByIdAndUpdate(userId, data, {runValidators:true})
         res.send("User updated successfully");
     }
