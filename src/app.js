@@ -22,8 +22,7 @@ app.post("/signup", async (req, res) =>{
        res.send("User created successfully");
     }
     catch(err){
-        console.error("Error creating user: ", err);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error" + err.message);
     }
    
 
@@ -66,29 +65,28 @@ app.patch("/user", async (req, res) => {
     const data = req.body;
 
     try{
-        const user = await User.findByIdAndUpdate({_id: userId}, data)
+        const user = await User.findByIdAndUpdate(userId, data, {runValidators:true})
         res.send("User updated successfully");
     }
     catch(err){
-        console.error("Error updating user: ", err);
-        res.status(400).send("Something went wrong");
+        res.status(400).send("Something went wrong" + err.message);
     }
 })
 
 // update user by emailId
-app.patch("/user", async (req, res) => {
-    const userEmail = req.body.emailId;
-    const data = req.body;
+// app.patch("/user", async (req, res) => {
+//     const userEmail = req.body.emailId;
+//     const data = req.body;
 
-    try{
-        const user = await User.findOneAndUpdate({emailId: userEmail}, data);
-        res.send("User updated successfully");
-    }
-    catch(err){
-        console.error("Error updating user: ", err);
-        res.status(400).send("Something went wrong");
-    }
-})
+//     try{
+//         const user = await User.findOneAndUpdate({emailId: userEmail}, data);
+//         res.send("User updated successfully");
+//     }
+//     catch(err){
+//         console.error("Error updating user: ", err);
+//         res.status(400).send("Something went wrong");
+//     }
+// })
 
 // delete user
 app.delete("/user", async (req, res) => {
