@@ -2,20 +2,25 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
+const bcrypt = require("bcrypt");
+const {validateSignUpData} = require("./utils/validation");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) =>{
-    // const userObj = {
-    //     firstName: "Ram",
-    //     lastName:"Sita",
-    //     emailId: "SitaRam@gmail.com",
-    //     password: "password143",
-    //     age: 25,
-    //     gender: "Female",
-    // }
-    // const userObj = req.body;
-    const user = new User(req.body);
+     // validation
+     validateSignUpData(req);
+     const {firstName, lastName, emailId, password} = req.body;
+
+     //password hashing
+     const passwordHash = await bcrypt.hash(password, 10);
+   
+     const user = new User({
+        firstName,
+        lastName,
+        emailId,
+        password: passwordHash
+    });
 
     try{
        await user.save();
@@ -23,9 +28,41 @@ app.post("/signup", async (req, res) =>{
     }
     catch(err){
         res.status(500).send("Internal Server Error" + err.message);
-    }
-   
+    }   
+})
 
+
+app.post("/login", async (req, res) =>{
+
+    try{
+
+    const {emailId, password} = req.body;
+
+    if(!validator.isEmail(emailId) ){
+       throw new Error("Invalid email address");
+    }
+
+    const isUserValid = await User.findOne({emailId: emailId});
+
+    if(!isUserValid){
+        throw new Error("User not found in the database");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, isUserValid.password);
+    
+    if(isPasswordValid){
+        res.send("Login successful");
+    }
+    else{
+        throw new Error("Invalid password");
+    }
+
+    }
+    catch(err){
+     res.status(400).send("ERROR: " + err.message);
+    }
+       
+    
 })
 
 
